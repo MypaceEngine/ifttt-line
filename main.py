@@ -110,6 +110,7 @@ app = webapp2.WSGIApplication([
     ('/ifttt2line-sticker', IFTTTReceiver_Sticker),
 #    ('/ifttt2line-multimessage', IFTTTReceiver_MultiMessage),
 #    ('/ifttt2line-richmessage', IFTTTReceiver_RichMessage),
+# test
     ('/content/.*',CONTENT_Provider),
     ('/thumbnail/.*',THUMBNAIL_Provider),
     ('/originals/.*',ORIGINALS_Provider),
