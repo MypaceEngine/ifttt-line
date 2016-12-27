@@ -79,6 +79,11 @@ class IFTTTReceiver_Sticker(webapp2.RequestHandler):
 #    def post(self):
 #        receiveIFTTT.receiveExec_RichMessage(self)
 
+class DashReceiver(webapp2.RequestHandler):
+
+    def post(self):
+        receiveDash.receiveExec_Sticker(self)
+
 class CONTENT_Provider(webapp2.RequestHandler):
 
     def get(self):
@@ -110,6 +115,7 @@ app = webapp2.WSGIApplication([
     ('/ifttt2line-sticker', IFTTTReceiver_Sticker),
 #    ('/ifttt2line-multimessage', IFTTTReceiver_MultiMessage),
 #    ('/ifttt2line-richmessage', IFTTTReceiver_RichMessage),
+    ('/dash', DashReceiver),
     ('/content/.*',CONTENT_Provider),
     ('/thumbnail/.*',THUMBNAIL_Provider),
     ('/originals/.*',ORIGINALS_Provider),
