@@ -22,6 +22,7 @@ def receiveExec_Text(self):
             to=strArr[0].strip()
             text="\\\\".join(strArr[1:]);
             text=text.lstrip('<.').rstrip('>').strip()
+            self.response.out.write('Received!')
         else:
             jsonstr = self.request.body
             logging.debug(jsonstr)
@@ -37,6 +38,7 @@ def receiveExec_Text(self):
         if not userinfo_utility.isExistUserData(to):
             return
         send2Line.sendText( to,text  )
+
 
 def receiveExec_Image(self):
         if(self.request.headers['Content-Type']=='text/plain'):
