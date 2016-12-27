@@ -61,13 +61,15 @@ def setUser_MakerSecret(id,maker_secret):
 def getUser_DashButton(dashid):
     id=memcache.get(key = "Dash-user-"+dashid)
     if id !=None:
+        logging.debug(dashid+u"のLineIDは"+id)
         return id
 
     else:
         currentUser=getCurrentUser()
         if currentUser !=None:
-            memcache.set(key = "Dash-user--"+dashid,value=currentUser)
-            memcache.set(key = "User-dash--"+currentUser,value=dashid)
+            memcache.set(key = "Dash-user--"+dashid,value=currentUser, time=86400)
+            memcache.set(key = "User-dash--"+currentUser,value=dashid, time=86400 )
+            logging.debug(dashid+u"のDashButtonは登録されていません。")
             return currentUser
     return "";
 #    try:
@@ -109,6 +111,7 @@ def deleteUserData(id):
     dashid=memcache.get(key="User-dash--"+id)
     memcache.delete(key = "User-dash--"+id)
     memcache.delete(key = "Dash-user--"+dashid)
+
     try:
         key = Key.from_path('UserData', id)
         entity = datastore.Delete(key)

@@ -14,11 +14,12 @@ def receiveExec(self,msg):
         timestamp=str(msg["timestamp"])
 
         if msg['type']=="follow" :
+                displayName=getFromLine.getUserProfine(id)["displayName"]
                 replyToken=str(msg["replyToken"])
 #                send2Line.sendText( sender_id,const.MSG_FIRSTMSG)
 #                send2Line.sendText( sender_id,sender_id)
 #                send2Line.sendText( sender_id,const.MSG_NONREGISTRATION )
-                send2Line.sendText( sender_id,const.MSG_DASH_BTN_REQ )
+                send2Line.sendText( sender_id,displayName+u"さん、こんにちは!"+const.MSG_DASH_BTN_REQ )
 
                 userinfo_utility.createUserData(sender_id)
                 userinfo_utility.setCurrentUser(sender_id)
@@ -56,7 +57,7 @@ def receiveExec(self,msg):
 
             elif msg["message"]["type"]=="location" :
                 #Location Message
-                displayName=getFromLine.getUserProfine([str(msg["content"]["from"])])[0]["displayName"]
+                #displayName=getFromLine.getUserProfine([str(msg["content"]["from"])])[0]["displayName"]
 #               form_fields = {
 #                                   "title": msg["content"]["location"]["title"],
 #                                   "address": msg["content"]["location"]["address"],
@@ -71,7 +72,7 @@ def receiveExec(self,msg):
 
             elif  msg["message"]["type"]=="sticker" :
                 #Sticker Message
-                displayName=getFromLine.getUserProfine([str(msg["content"]["from"])])[0]["displayName"]
+               # displayName=getFromLine.getUserProfine([str(msg["content"]["from"])])[0]["displayName"]
 #               form_fields = {
 #                                   "STKPKGID": msg["content"]["contentMetadata"]["STKPKGID"],
 #                                   "STKID": msg["content"]["contentMetadata"]["STKID"],

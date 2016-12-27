@@ -4,6 +4,7 @@ import logging
 import json
 import userinfo_utility
 import send2Line
+import getFromLine
 import utility
 import uuid
 import urllib
@@ -40,7 +41,9 @@ def receiveExec_Text(self):
 
         if not userinfo_utility.isExistUserData(id):
             return
-        send2Line.sendText( id,text  )
+
+        displayName=getFromLine.getUserProfine(id)["displayName"]
+        send2Line.sendText( id,displayName+u"さん、"+text  )
 
 def receiveExec_Image(self):
         if(self.request.headers['Content-Type']=='text/plain'):
