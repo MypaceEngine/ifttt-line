@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from google.appengine.api import urlfetch
 import send2Line
 import getFromLine
@@ -14,12 +15,14 @@ def receiveExec(self,msg):
         timestamp=str(msg["timestamp"])
 
         if msg['type']=="follow" :
-                displayName=getFromLine.getUserProfine(id)["displayName"]
+                displayName=getFromLine.getUserProfine(sender_id)["displayName"]
                 replyToken=str(msg["replyToken"])
 #                send2Line.sendText( sender_id,const.MSG_FIRSTMSG)
 #                send2Line.sendText( sender_id,sender_id)
 #                send2Line.sendText( sender_id,const.MSG_NONREGISTRATION )
-                send2Line.sendText( sender_id,displayName+u"さん、こんにちは!"+const.MSG_DASH_BTN_REQ )
+#                send2Line.sendText( sender_id,unicode(displayName)+"さん、こんにちは!"+const.MSG_DASH_BTN_REQ )
+                send2Line.sendText( sender_id,const.MSG_DASH_BTN_REQ)
+
 
                 userinfo_utility.createUserData(sender_id)
                 userinfo_utility.setCurrentUser(sender_id)

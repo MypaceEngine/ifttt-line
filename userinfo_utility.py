@@ -6,6 +6,7 @@ from google.appengine.api import memcache
 from google.appengine.ext import db
 import datetime
 import logging
+import send2Line
 
 def createUserData(id):
     entity = Entity('UserData', name=id)
@@ -67,10 +68,12 @@ def getUser_DashButton(dashid):
     else:
         currentUser=getCurrentUser()
         if currentUser !=None:
-            memcache.set(key = "Dash-user--"+dashid,value=currentUser, time=86400)
-            memcache.set(key = "User-dash--"+currentUser,value=dashid, time=86400 )
+            memcache.set(key = "Dash-user-"+dashid,value=currentUser, time=86400)
+            memcache.set(key = "User-dash-"+currentUser,value=dashid, time=86400 )
             logging.debug(dashid+u"のDashButtonは登録されていません。")
-            return currentUser
+            send2Line.sendText( currentUser,"DashButtonが登録されました")
+            clearCurrentUser()
+            return ""
     return "";
 #    try:
 #    entities=db.Query('UserData').filter("dash =", dashid)
@@ -108,9 +111,9 @@ def getUser_DashButton(dashid):
 def deleteUserData(id):
     memcache.delete(key="MakerSecret-"+id)
     memcache.delete(key="USER-"+id)
-    dashid=memcache.get(key="User-dash--"+id)
-    memcache.delete(key = "User-dash--"+id)
-    memcache.delete(key = "Dash-user--"+dashid)
+    dashid=memcache.get(key="User-dash-"+id)
+    memcache.delete(key = "User-dash-"+id)
+    memcache.delete(key = "Dash-user-"+dashid)
 
     try:
         key = Key.from_path('UserData', id)

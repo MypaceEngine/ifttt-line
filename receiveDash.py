@@ -36,6 +36,9 @@ def receiveExec_Text(self):
 
             id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
 
+            if len(id)==0:
+                return
+
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Received!')
 
@@ -43,7 +46,8 @@ def receiveExec_Text(self):
             return
 
         displayName=getFromLine.getUserProfine(id)["displayName"]
-        send2Line.sendText( id,displayName+u"さん、"+text  )
+
+        send2Line.sendText( id,text  )
 
 def receiveExec_Image(self):
         if(self.request.headers['Content-Type']=='text/plain'):
@@ -69,6 +73,10 @@ def receiveExec_Image(self):
                 previewImageUrl=self.request.host_url+"/thumbnail/"+picture_key+"/"+encodeURL
 
             id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+
+            if len(id)==0:
+                return
+
             if not userinfo_utility.isExistUserData(id):
                 return
             send2Line.sendImage( id,originalContentUrl_encode, previewImageUrl)
@@ -92,6 +100,9 @@ def receiveExec_Video(self):
                 previewImageUrl="https://ifttt-line.appspot.com/images/preview_image.jpg?"+str(uuid.uuid4())
 
             id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if len(id)==0:
+                return
+
             if not userinfo_utility.isExistUserData(id):
                 return
             send2Line.sendVideo( id,jsonobj[u"originalContentUrl"],previewImageUrl )
@@ -117,6 +128,9 @@ def receiveExec_Audio(self):
                 audioLen=180000
 
             id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if len(id)==0:
+                return
+
             if not userinfo_utility.isExistUserData(id):
                 return
             send2Line.sendAudio( id,jsonobj[u"originalContentUrl"],audioLen )
@@ -182,6 +196,9 @@ def receiveExec_Location(self):
                 address="位置情報"
 
             id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if len(id)==0:
+                return
+
             if not userinfo_utility.isExistUserData(id):
                 return
             send2Line.sendLocation( id,address,title,latitude,longitude)
@@ -218,6 +235,8 @@ def receiveExec_Sticker(self):
             if jsonobj.has_key("STKID"):
                     STKID=jsonobj[u"STKID"]
             id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if len(id)==0:
+                return
             if not userinfo_utility.isExistUserData(id):
                 return
             send2Line.sendSticker( id,STKID ,STKPKGID,STKVER)
