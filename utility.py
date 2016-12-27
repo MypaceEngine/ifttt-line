@@ -64,7 +64,8 @@ def getImageDataExternal(self,width,heigh):
             thumb=image_Transform(photo_data,width,heigh)
             contentLegth=len(thumb)
             self.response.headers['Content-Type'] = result.headers['Content-Type']
-            self.response.headers['content-disposition'] = result.headers['content-disposition']
+            if result.headers.has_key("content-disposition"):
+                self.response.headers['content-disposition'] = result.headers['content-disposition']
             self.response.headers['date'] = result.headers['date']
             self.response.headers['content-length'] =contentLegth
             self.response.out.write(thumb)
