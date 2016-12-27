@@ -59,14 +59,26 @@ def setUser_MakerSecret(id,maker_secret):
     memcache.set(key = "MakerSecret-"+id,value=maker_secret)
 
 def getUser_DashButton(dashid):
-#    try:
-    entities=db.Query('UserData')
+    id=memcache.get(key = "Dash-user-"+dashid)
+    if id !=None:
+        return id
 
-    logging.debug(type(object));
-    for entity in entities:
-        if dashid==entity['dash']:
-            logging.debug(dashid+u"のLineIDは"+entity['name'])
-            return entity['name']
+    else:
+        currentUser=getCurrentUser()
+        if currentUser !=None:
+            memcache.set(key = "Dash-user--"+dashid,value=currentUser)
+            memcache.set(key = "User-dash--"+currentUser,value=dashid)
+            return currentUser
+    return "";
+#    try:
+#    entities=db.Query('UserData').filter("dash =", dashid)
+
+#    logging.debug(type(entities));
+#    for entity in entities.run(limit=1):
+#    for entity in entities:
+#        if dashid==entity['dash']:
+#            logging.debug(dashid+u"のLineIDは"+entity['name'])
+#            return entity['name']
 
 #        id_path = Key.from_path('UserData', "dash",dashid)
 #        if id_path !=None:
@@ -75,25 +87,28 @@ def getUser_DashButton(dashid):
 #    except:
 #        logging.debug(dashid+u"のDashButtonは登録されていません。")
 
-    currentUser=getCurrentUser()
-    if currentUser !=None:
-        currentUser_path = Key.from_path('UserData', currentUser)
-        entity = datastore.Get(currentUser_path)
-        entity.update({
-                   'dash': dashid
+#    currentUser=getCurrentUser()
+#    if currentUser !=None:
+#        currentUser_path = Key.from_path('UserData', currentUser)
+#        entity = datastore.Get(currentUser_path)
+#        entity.update({
+#                   'dash': dashid
+#
+ #       })
+ #       datastore.Put(entity)
 
-        })
-        datastore.Put(entity)
+#        clearCurrentUser()
+ #       return currentUser
 
-        clearCurrentUser()
-        return currentUser
-
-    return ""
+#    return ""
 
 
 def deleteUserData(id):
     memcache.delete(key="MakerSecret-"+id)
     memcache.delete(key="USER-"+id)
+    dashid=memcache.get(key="User-dash--"+id)
+    memcache.delete(key = "User-dash--"+id)
+    memcache.delete(key = "Dash-user--"+dashid)
     try:
         key = Key.from_path('UserData', id)
         entity = datastore.Delete(key)
