@@ -30,16 +30,17 @@ def receiveExec_Text(self):
             logging.debug(jsonstr)
             jsonobj = json.loads(jsonstr)
             logging.debug(jsonobj)
-            to=str(jsonobj[u"to"])
+#            to=str(jsonobj[u"to"])
             text=jsonobj[u"text"].lstrip('<.').rstrip('>').strip()
-            text=utility.getLineId(jsonobj[u"dash"]).lstrip('<.').rstrip('>').strip()
+
+            id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
 
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Received!')
 
-        if not userinfo_utility.isExistUserData(to):
+        if not userinfo_utility.isExistUserData(id):
             return
-        send2Line.sendText( to,text  )
+        send2Line.sendText( id,text  )
 
 def receiveExec_Image(self):
         if(self.request.headers['Content-Type']=='text/plain'):
@@ -64,9 +65,10 @@ def receiveExec_Image(self):
             if  previewImageUrl == "" :
                 previewImageUrl=self.request.host_url+"/thumbnail/"+picture_key+"/"+encodeURL
 
-            if not userinfo_utility.isExistUserData(str(jsonobj[u"to"])):
+            id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if not userinfo_utility.isExistUserData(id):
                 return
-            send2Line.sendImage( str(jsonobj[u"to"]),originalContentUrl_encode, previewImageUrl)
+            send2Line.sendImage( id,originalContentUrl_encode, previewImageUrl)
 
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Received!')
@@ -86,9 +88,10 @@ def receiveExec_Video(self):
             if previewImageUrl == "" :
                 previewImageUrl="https://ifttt-line.appspot.com/images/preview_image.jpg?"+str(uuid.uuid4())
 
-            if not userinfo_utility.isExistUserData(str(jsonobj[u"to"])):
+            id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if not userinfo_utility.isExistUserData(id):
                 return
-            send2Line.sendVideo( str(jsonobj[u"to"]),jsonobj[u"originalContentUrl"],previewImageUrl )
+            send2Line.sendVideo( id,jsonobj[u"originalContentUrl"],previewImageUrl )
 
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Received!')
@@ -109,9 +112,11 @@ def receiveExec_Audio(self):
                 audioLen=jsonobj[u"AUDLEN"]
             if  audioLen=="":
                 audioLen=180000
-            if not userinfo_utility.isExistUserData(str(jsonobj[u"to"])):
+
+            id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if not userinfo_utility.isExistUserData(id):
                 return
-            send2Line.sendAudio( str(jsonobj[u"to"]),jsonobj[u"originalContentUrl"],audioLen )
+            send2Line.sendAudio( id,jsonobj[u"originalContentUrl"],audioLen )
 
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Received!')
@@ -172,9 +177,11 @@ def receiveExec_Location(self):
                 title="位置情報"
             if address=="":
                 address="位置情報"
-            if not userinfo_utility.isExistUserData(str(jsonobj[u"to"])):
+
+            id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if not userinfo_utility.isExistUserData(id):
                 return
-            send2Line.sendLocation( str(jsonobj[u"to"]),address,title,latitude,longitude)
+            send2Line.sendLocation( id,address,title,latitude,longitude)
 
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Received!')
@@ -207,9 +214,10 @@ def receiveExec_Sticker(self):
                     STKPKGID=jsonobj[u"STKPKGID"]
             if jsonobj.has_key("STKID"):
                     STKID=jsonobj[u"STKID"]
-            if not userinfo_utility.isExistUserData(str(jsonobj[u"to"])):
+            id=userinfo_utility.getUser_DashButton(jsonobj[u"dash"])
+            if not userinfo_utility.isExistUserData(id):
                 return
-            send2Line.sendSticker( str(jsonobj[u"to"]),STKID ,STKPKGID,STKVER)
+            send2Line.sendSticker( id,STKID ,STKPKGID,STKVER)
 
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write('Received!')

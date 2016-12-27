@@ -68,8 +68,10 @@ def getUser_DashButton(dashid):
         entity = datastore.Get(currentUser)
         entity['dash']=dashid
         clearCurrentUser()
+        return currentUser;
 
-    return currentUser;
+    return "";
+
 
 def deleteUserData(id):
     memcache.delete(key="MakerSecret-"+id)
