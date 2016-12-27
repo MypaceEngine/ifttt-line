@@ -14,10 +14,13 @@ def receiveExec(self,msg):
         timestamp=str(msg["timestamp"])
 
         if msg['type']=="follow" :
-                send2Line.sendText( sender_id,const.MSG_FIRSTMSG)
-                send2Line.sendText( sender_id,sender_id)
-                send2Line.sendText( sender_id,const.MSG_NONREGISTRATION )
+#                send2Line.sendText( sender_id,const.MSG_FIRSTMSG)
+#                send2Line.sendText( sender_id,sender_id)
+#                send2Line.sendText( sender_id,const.MSG_NONREGISTRATION )
+                send2Line.sendText( sender_id,const.MSG_DASH_BTN_REQ )
+
                 userinfo_utility.createUserData(sender_id)
+                userinfo_utility.setCurrentUser(sender_id)
         elif msg["type"]=="unfollow" :
                 userinfo_utility.deleteUserData(sender_id)
         elif msg["type"]=="message":

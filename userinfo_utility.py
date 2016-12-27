@@ -57,6 +57,20 @@ def setUser_MakerSecret(id,maker_secret):
     datastore.Put(entity)
     memcache.set(key = "MakerSecret-"+id,value=maker_secret)
 
+def getUser_DashButton(dashid):
+    id_path = Key.from_path('UserData', dash=dashid)
+    if id_path !=None:
+        entity = datastore.Get(id_path)
+        return entity['name']
+
+    currentUser=getCurrentUser();
+    if currentUser !=None:
+        entity = datastore.Get(currentUser)
+        entity['dash']=dashid
+        clearCurrentUser()
+
+    return currentUser;
+
 def deleteUserData(id):
     memcache.delete(key="MakerSecret-"+id)
     memcache.delete(key="USER-"+id)
@@ -65,3 +79,12 @@ def deleteUserData(id):
         entity = datastore.Delete(key)
     except:
         logging.debug(id+u"は登録されていません。")
+
+def setCurrentUser(id):
+    memcache.set(key = "CURRENTUSR",value=id)
+
+def getCurrentUser():
+    return memcache.get(key = "CURRENTUSR")
+
+def clearCurrentUser():
+    return memcache.delete(key = "CURRENTUSR")
