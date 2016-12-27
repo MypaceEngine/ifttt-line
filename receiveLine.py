@@ -10,10 +10,11 @@ import utility
 def receiveExec(self,msg):
         toType_id=str(msg["source"]["type"])
         sender_id=str(msg["source"]["userId"])
-        replyToken=str(msg["replyToken"])
+
         timestamp=str(msg["timestamp"])
 
         if msg['type']=="follow" :
+                replyToken=str(msg["replyToken"])
 #                send2Line.sendText( sender_id,const.MSG_FIRSTMSG)
 #                send2Line.sendText( sender_id,sender_id)
 #                send2Line.sendText( sender_id,const.MSG_NONREGISTRATION )
@@ -24,6 +25,7 @@ def receiveExec(self,msg):
         elif msg["type"]=="unfollow" :
                 userinfo_utility.deleteUserData(sender_id)
         elif msg["type"]=="message":
+            replyToken=str(msg["replyToken"])
             message_id=msg["message"]["id"];
             secret=userinfo_utility.getUser_MakerSecret(sender_id)
             displayName=getFromLine.getUserProfine(sender_id)["displayName"]

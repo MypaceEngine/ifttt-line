@@ -58,15 +58,24 @@ def setUser_MakerSecret(id,maker_secret):
     memcache.set(key = "MakerSecret-"+id,value=maker_secret)
 
 def getUser_DashButton(dashid):
-    id_path = Key.from_path('UserData', dash=dashid)
-    if id_path !=None:
-        entity = datastore.Get(id_path)
-        return entity['name']
+    try:
+        id_path = Key.from_path('UserData', "dash",dashid)
+        if id_path !=None:
+            entity = datastore.Get(id_path)
+            return entity['name']
+    except:
+        logging.debug(dashid+u"のDashButtonは登録されていません。")
 
     currentUser=getCurrentUser();
     if currentUser !=None:
-        entity = datastore.Get(currentUser)
-        entity['dash']=dashid
+        currentUser_path = Key.from_path('UserData', currentUser)
+        entity = datastore.Get(currentUser_path)
+        entity.update({
+                   'dash': dashid
+
+        })
+        datastore.Put(entity)
+
         clearCurrentUser()
         return currentUser;
 
