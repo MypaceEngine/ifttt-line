@@ -3,6 +3,7 @@ from google.appengine.api import datastore
 from google.appengine.api.datastore import Entity
 from google.appengine.api.datastore_types import Key
 from google.appengine.api import memcache
+from google.appengine.ext import db
 import datetime
 import logging
 
@@ -58,15 +59,23 @@ def setUser_MakerSecret(id,maker_secret):
     memcache.set(key = "MakerSecret-"+id,value=maker_secret)
 
 def getUser_DashButton(dashid):
-    try:
-        id_path = Key.from_path('UserData', "dash",dashid)
-        if id_path !=None:
-            entity = datastore.Get(id_path)
-            return entity['name']
-    except:
-        logging.debug(dashid+u"のDashButtonは登録されていません。")
+#    try:
+    entities=db.Query('UserData')
 
-    currentUser=getCurrentUser();
+    logging.debug(type(object));
+    for entity in entities:
+        if dashid==entity['dash']:
+            logging.debug(dashid+u"のLineIDは"+entity['name'])
+            return entity['name']
+
+#        id_path = Key.from_path('UserData', "dash",dashid)
+#        if id_path !=None:
+#            entity = datastore.Get(id_path)
+#            return entity['name']
+#    except:
+#        logging.debug(dashid+u"のDashButtonは登録されていません。")
+
+    currentUser=getCurrentUser()
     if currentUser !=None:
         currentUser_path = Key.from_path('UserData', currentUser)
         entity = datastore.Get(currentUser_path)
@@ -77,9 +86,9 @@ def getUser_DashButton(dashid):
         datastore.Put(entity)
 
         clearCurrentUser()
-        return currentUser;
+        return currentUser
 
-    return "";
+    return ""
 
 
 def deleteUserData(id):
