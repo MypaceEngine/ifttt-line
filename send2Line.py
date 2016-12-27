@@ -64,7 +64,7 @@ def sendAudio(to_ids, originalContentUrl,audioLen):
     form_fields = {
                    "to": to_ids,
                    "messages":[{
-                              "type":"video",
+                              "type":"audio",
                               "originalContentUrl":originalContentUrl,
                               "duration":audioLen
                               }]

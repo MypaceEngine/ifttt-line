@@ -96,4 +96,4 @@ def image_Transform(imageData,width,heigh):
 def getContentURL(self,url):
     picture_key=getHash(url)
     encodeURL=urllib.quote(url)
-    return self.request.host_url+"/content/"+ picture_key+"/"+encodeURL
+    return "https://ifttt-line.appspot.com/content/"+ picture_key+"/"+encodeURL
