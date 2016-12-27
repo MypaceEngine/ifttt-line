@@ -9,6 +9,9 @@ import uuid
 import urllib
 import re
 
+def receiveExec(self):
+        self.receiveExec_Text()
+
 def receiveExec_Text(self):
         logging.debug(self.request.headers)
         logging.debug(self.request.body)

@@ -7,6 +7,7 @@ import hmac, hashlib, base64
 import getFromLine
 import receiveLine
 import receiveIFTTT
+import receiveDash
 import utility
 
 from google.appengine.api.labs import taskqueue
@@ -82,6 +83,36 @@ class IFTTTReceiver_Sticker(webapp2.RequestHandler):
 class DashReceiver(webapp2.RequestHandler):
 
     def post(self):
+        receiveDash.receiveExec(self)
+
+class DashReceiver_Text(webapp2.RequestHandler):
+
+    def post(self):
+        receiveDash.receiveExec_Text(self)
+
+class DashReceiver_Image(webapp2.RequestHandler):
+
+    def post(self):
+        receiveDash.receiveExec_Image(self)
+
+class DashReceiver_Video(webapp2.RequestHandler):
+
+    def post(self):
+        receiveDash.receiveExec_Video(self)
+
+class DashReceiver_Audio(webapp2.RequestHandler):
+
+    def post(self):
+        receiveDash.receiveExec_Audio(self)
+
+class DashReceiver_Location(webapp2.RequestHandler):
+
+    def post(self):
+        receiveDash.receiveExec_Location(self)
+
+class DashReceiver_Sticker(webapp2.RequestHandler):
+
+    def post(self):
         receiveDash.receiveExec_Sticker(self)
 
 class CONTENT_Provider(webapp2.RequestHandler):
@@ -115,7 +146,13 @@ app = webapp2.WSGIApplication([
     ('/ifttt2line-sticker', IFTTTReceiver_Sticker),
 #    ('/ifttt2line-multimessage', IFTTTReceiver_MultiMessage),
 #    ('/ifttt2line-richmessage', IFTTTReceiver_RichMessage),
-    ('/dash', DashReceiver),
+    ('/dash-receive', DashReceiver),
+    ('/dash-receive-text', DashReceiver_Text),
+    ('/dash-receive-image', DashReceiver_Image),
+    ('/dash-receive-video', DashReceiver_Video),
+    ('/dash-receive-audio', DashReceiver_Audio),
+    ('/dash-receive-location', DashReceiver_Location),
+    ('/dash-receive-sticker', DashReceiver_Sticker),
     ('/content/.*',CONTENT_Provider),
     ('/thumbnail/.*',THUMBNAIL_Provider),
     ('/originals/.*',ORIGINALS_Provider),
