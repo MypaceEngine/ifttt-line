@@ -22,7 +22,6 @@ def receiveExec_Text(self):
             to=strArr[0].strip()
             text="\\\\".join(strArr[1:]);
             text=text.lstrip('<.').rstrip('>').strip()
-            self.response.out.write('Received!')
         else:
             jsonstr = self.request.body
             logging.debug(jsonstr)
@@ -31,18 +30,22 @@ def receiveExec_Text(self):
             logging.debug(jsonstr)
             jsonobj = json.loads(jsonstr)
             logging.debug(jsonobj)
-            self.response.headers['Content-Type'] = 'text/plain'
-            self.response.out.write('Received!')
             to=str(jsonobj[u"to"])
             text=jsonobj[u"text"].lstrip('<.').rstrip('>').strip()
+            text=utility.getLineId(jsonobj[u"dash"]).lstrip('<.').rstrip('>').strip()
+
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('Received!')
+
         if not userinfo_utility.isExistUserData(to):
             return
         send2Line.sendText( to,text  )
 
-
 def receiveExec_Image(self):
         if(self.request.headers['Content-Type']=='text/plain'):
             jsonstr = self.request.body
+            self.response.headers['Content-Type'] = 'text/plain'
+            self.response.out.write('Received!')
         else:
             jsonstr = self.request.body
             logging.debug(jsonstr)
@@ -65,6 +68,9 @@ def receiveExec_Image(self):
                 return
             send2Line.sendImage( str(jsonobj[u"to"]),originalContentUrl_encode, previewImageUrl)
 
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('Received!')
+
 def receiveExec_Video(self):
         if(self.request.headers['Content-Type']=='text/plain'):
             jsonstr = self.request.body
@@ -73,8 +79,6 @@ def receiveExec_Video(self):
             logging.debug(jsonstr)
             jsonobj = json.loads(jsonstr)
             logging.debug(jsonobj)
-            self.response.headers['Content-Type'] = 'text/plain'
-            self.response.out.write('Received!')
 
             previewImageUrl=""
             if jsonobj.has_key(u"previewImageUrl"):
@@ -85,6 +89,9 @@ def receiveExec_Video(self):
             if not userinfo_utility.isExistUserData(str(jsonobj[u"to"])):
                 return
             send2Line.sendVideo( str(jsonobj[u"to"]),jsonobj[u"originalContentUrl"],previewImageUrl )
+
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('Received!')
 
 def receiveExec_Audio(self):
 
@@ -106,6 +113,8 @@ def receiveExec_Audio(self):
                 return
             send2Line.sendAudio( str(jsonobj[u"to"]),jsonobj[u"originalContentUrl"],audioLen )
 
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('Received!')
 
 def receiveExec_Location(self):
         logging.debug(self.request.headers)
@@ -116,8 +125,6 @@ def receiveExec_Location(self):
             logging.debug(jsonstr)
             jsonobj = json.loads(jsonstr)
             logging.debug(jsonobj)
-            self.response.headers['Content-Type'] = 'text/plain'
-            self.response.out.write('Received!')
             latitude=0;
             longitude=0;
             title="";
@@ -169,6 +176,9 @@ def receiveExec_Location(self):
                 return
             send2Line.sendLocation( str(jsonobj[u"to"]),address,title,latitude,longitude)
 
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('Received!')
+
 def receiveExec_Sticker(self):
         if(self.request.headers['Content-Type']=='text/plain'):
             jsonstr = self.request.body
@@ -200,6 +210,9 @@ def receiveExec_Sticker(self):
             if not userinfo_utility.isExistUserData(str(jsonobj[u"to"])):
                 return
             send2Line.sendSticker( str(jsonobj[u"to"]),STKID ,STKPKGID,STKVER)
+
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.out.write('Received!')
 
 #def receiveExec_MultiMessage(self):
 #        if(self.request.headers['Content-Type']=='text/plain'):
