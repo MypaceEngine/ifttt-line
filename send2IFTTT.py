@@ -6,7 +6,7 @@ import const
 
 def sendData(ifttt_event, ifttt_key, senderID,from_id, event_type, msg_data):
     if ifttt_key ==None:
-        send2Line.sendText( str(senderID),const.MSG_NONREGISTRATION )
+        send2Line.sendText( str(senderID),const.MSG_NONREGISTRATION)
         return
     if msg_data.count('\n'):
         msg_data=u"<pre>"+msg_data+u"</pre>"

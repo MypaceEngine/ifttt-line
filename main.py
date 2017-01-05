@@ -115,6 +115,11 @@ class DashReceiver_Sticker(webapp2.RequestHandler):
     def post(self):
         receiveDash.receiveExec_Sticker(self)
 
+class DashReceiver_Test(webapp2.RequestHandler):
+
+    def post(self):
+        receiveDash.receiveExec_Test(self)
+
 class CONTENT_Provider(webapp2.RequestHandler):
 
     def get(self):
@@ -153,6 +158,7 @@ app = webapp2.WSGIApplication([
     ('/dash-receive-audio', DashReceiver_Audio),
     ('/dash-receive-location', DashReceiver_Location),
     ('/dash-receive-sticker', DashReceiver_Sticker),
+    ('/dash-receive-test', DashReceiver_Test),
     ('/content/.*',CONTENT_Provider),
     ('/thumbnail/.*',THUMBNAIL_Provider),
     ('/originals/.*',ORIGINALS_Provider),

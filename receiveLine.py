@@ -7,14 +7,17 @@ import time
 import send2IFTTT
 import const
 import utility
+import logging
 
 def receiveExec(self,msg):
+        logging.debug('ENTER receiveExec()')
         toType_id=str(msg["source"]["type"])
         sender_id=str(msg["source"]["userId"])
 
         timestamp=str(msg["timestamp"])
 
         if msg['type']=="follow" :
+                logging.debug(msg['type'])
                 displayName=getFromLine.getUserProfine(sender_id)["displayName"]
                 replyToken=str(msg["replyToken"])
 #                send2Line.sendText( sender_id,const.MSG_FIRSTMSG)
@@ -25,7 +28,6 @@ def receiveExec(self,msg):
 
 
                 userinfo_utility.createUserData(sender_id)
-                userinfo_utility.setCurrentUser(sender_id)
         elif msg["type"]=="unfollow" :
                 userinfo_utility.deleteUserData(sender_id)
         elif msg["type"]=="message":
@@ -38,13 +40,19 @@ def receiveExec(self,msg):
             if msg["message"]["type"]=="text" :
                 #TEXT Message
 
+
                 text=msg["message"]["text"]
-                if text.find('ifttt:reg:') ==0:
+                logging.debug('text: ' + text)
+                if 'ifttt:reg:' in text:
+                    send2IFTTT.sendData("LINE-TEXT",secret,sender_id, displayName, createTime, text )
+                elif 'dash:reg:message:' in text:
+                    new_message = text[17:]
+                    if userinfo_utility.setUserMessageByLineId(sender_id, new_message):
+                        send2Line.sendText( sender_id, u'メッセージの変更に成功しました')
+                else:
                     id=text[10:]
                     userinfo_utility.setUser_MakerSecret(sender_id,id)
                     send2Line.sendText( sender_id,const.MSG_REGISTRATION)
-                else:
-                    send2IFTTT.sendData("LINE-TEXT",secret,sender_id, displayName, createTime, text )
 
             elif msg["message"]["type"]=="image" :
                 #Image Message
