@@ -16,7 +16,8 @@ class UserData(db.Model):
     message = db.StringProperty()
 
 
-def createUserData(id):
+def createUserData(lineId):
+    id = lineId
     # entity = Entity('UserData', name=id)
     # entity.update({
     #     'registrationTime': datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
@@ -33,11 +34,12 @@ def createUserData(id):
     )
     userData.put()
 
-    setCurrentUser(id)
+    _setCurrentUser(id)
     # memcache.set(key = "USER-"+id,value="DUMMY")
 
 
-def test_isExistUserData(id):
+def test_isExistUserData(lineId):
+    id = lineID
     result = False
     try:
         key = Key.from_path('UserData', id)
@@ -53,23 +55,18 @@ def test_isExistUserData(id):
     return result
 
 
-def isExistUserData(id):
+def isExistUserData(lineId):
+    id = lineId
     result = False
-    # dummy=memcache.get(key = "USER-"+id)
-    dummy = None
-    if dummy != None:
-        result = True
-    else:
-        try:
-            key = Key.from_path('UserData', id)
-            entity = datastore.Get(key)
-            if entity != None:
-                result = True
-                # memcache.set(key = "USER-"+id,value="DUMMY")
-            else:
-                logging.debug(id + u"は登録されていません。")
-        except:
+    try:
+        key = Key.from_path('UserData', id)
+        entity = datastore.Get(key)
+        if entity != None:
+            result = True
+        else:
             logging.debug(id + u"は登録されていません。")
+    except:
+        logging.debug(id + u"は登録されていません。")
 
     return result
 
@@ -119,7 +116,7 @@ def getUserByDashId(dashId):
 def setUserByDashIdWithCurrentUser(dashId):
     # if not exists, assign the dashId to lineId
     result = False
-    currentUser = getCurrentUser()
+    currentUser = _getCurrentUser()
 
     if currentUser != None:
         # memcache.set(key = "Dash-user-"+dashid,value=currentUser, time=86400)
@@ -133,7 +130,7 @@ def setUserByDashIdWithCurrentUser(dashId):
             userData.dashId = dashId
             userData.put()
             found_lineId = lineId
-            clearCurrentUser()
+            _clearCurrentUser()
             send2Line.sendText(currentUser, "DashButtonが登録されました")
             result = True
         except:
@@ -235,20 +232,21 @@ def deleteUserData(id):
     except:
         logging.debug(id + u"は登録されていません。")
 
+### Private methods
 
-def setCurrentUser(id):
+def _setCurrentUser(id):
     memcache.set(key="CURRENTUSR", value=id)
 
 
-def getCurrentUser():
+def _getCurrentUser():
     return memcache.get(key="CURRENTUSR")
 
 
-def clearCurrentUser():
+def _clearCurrentUser():
     return memcache.delete(key="CURRENTUSR")
 
 
-### TEST
+### Tests
 
 def test_getDashIdFromLineId(lineId):
     logging.debug('ENTER test_getDashIdFromLineId()\n')
