@@ -1,0 +1,7 @@
+# -*- coding: utf-8 -*-
+
+CHANNEL_SECRET="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+ChannelAccessToken="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+HASH_SEEDS="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+GOOGLE_API_KEY="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
