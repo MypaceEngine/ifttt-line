@@ -22,7 +22,7 @@ import uuid
 #        logging.debug(result.content)
 #    return result.content
 
-
+# TODO: 本ファイルはutility系に統合
 def getUserProfine(mid):
 #    midstr= ','.join(mids)
     url = "https://api.line.me/v2/bot/profile/"+mid

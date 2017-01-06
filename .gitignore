@@ -62,3 +62,8 @@ target/
 .ipynb_checkpoints
 .settings/org.eclipse.core.resources.prefs
 .settings/org.eclipse.core.runtime.prefs
+
+# Secret file
+const_secret.py
+
+

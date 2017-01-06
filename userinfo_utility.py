@@ -8,11 +8,13 @@ import datetime
 import logging
 import send2Line
 
+
 class UserData(db.Model):
-  lineId = db.StringProperty()
-  dashId = db.StringProperty()
-  registrationTime = db.StringProperty()
-  message = db.StringProperty()
+    lineId = db.StringProperty()
+    dashId = db.StringProperty()
+    registrationTime = db.StringProperty()
+    message = db.StringProperty()
+
 
 def createUserData(id):
     # entity = Entity('UserData', name=id)
@@ -23,75 +25,78 @@ def createUserData(id):
     # })
     # datastore.Put(entity)
     userData = UserData(
-        key_name = id,
-        lineId = id,
-        dashId = 'not_registered_yet',
-        registrationTime = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-        message = u'お電話ですので、きてください',
+        key_name=id,
+        lineId=id,
+        dashId='not_registered_yet',
+        registrationTime=datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
+        message=u'お電話ですので、きてください',
     )
     userData.put()
 
     setCurrentUser(id)
     # memcache.set(key = "USER-"+id,value="DUMMY")
 
-def test_isExistUserData(id):
 
+def test_isExistUserData(id):
     result = False
     try:
         key = Key.from_path('UserData', id)
         entity = datastore.Get(key)
         if entity != None:
             logging.debug('entity: ' + str(entity))
-            result=True
+            result = True
         else:
-            logging.debug(id+u"は登録されていません。")
+            logging.debug(id + u"は登録されていません。")
     except:
-        logging.debug(id+u"は登録されていません。")
+        logging.debug(id + u"は登録されていません。")
 
     return result
 
+
 def isExistUserData(id):
-    result=False
+    result = False
     # dummy=memcache.get(key = "USER-"+id)
     dummy = None
-    if dummy!=None:
-        result=True
+    if dummy != None:
+        result = True
     else:
         try:
             key = Key.from_path('UserData', id)
             entity = datastore.Get(key)
             if entity != None:
-                result=True
+                result = True
                 # memcache.set(key = "USER-"+id,value="DUMMY")
             else:
-                logging.debug(id+u"は登録されていません。")
+                logging.debug(id + u"は登録されていません。")
         except:
-            logging.debug(id+u"は登録されていません。")
+            logging.debug(id + u"は登録されていません。")
 
     return result
 
-def getUser_MakerSecret(id):
 
-    secret=memcache.get(key = "MakerSecret-"+id)
-    if secret ==None:
+def getUser_MakerSecret(id):
+    secret = memcache.get(key="MakerSecret-" + id)
+    if secret == None:
         try:
             key = Key.from_path('UserData', id)
             entity = datastore.Get(key)
-            secret=entity['maker_secret']
-            memcache.set(key = "MakerSecret-"+id,value=secret)
+            secret = entity['maker_secret']
+            memcache.set(key="MakerSecret-" + id, value=secret)
         except:
-            logging.debug(id+u"のIFTTT Maker Secretは登録されていません。")
+            logging.debug(id + u"のIFTTT Maker Secretは登録されていません。")
     return secret
 
-def setUser_MakerSecret(id,maker_secret):
+
+def setUser_MakerSecret(id, maker_secret):
     key = Key.from_path('UserData', id)
     entity = datastore.Get(key)
     entity.update({
-                   'maker_secret': maker_secret
+        'maker_secret': maker_secret
 
     })
     datastore.Put(entity)
-    memcache.set(key = "MakerSecret-"+id,value=maker_secret)
+    memcache.set(key="MakerSecret-" + id, value=maker_secret)
+
 
 def getUserByDashId(dashId):
     # id=memcache.get(key = "Dash-user-"+dashid)
@@ -110,15 +115,16 @@ def getUserByDashId(dashId):
 
     return found_lineId
 
+
 def setUserByDashIdWithCurrentUser(dashId):
     # if not exists, assign the dashId to lineId
     result = False
-    currentUser=getCurrentUser()
+    currentUser = getCurrentUser()
 
     if currentUser != None:
         # memcache.set(key = "Dash-user-"+dashid,value=currentUser, time=86400)
         # memcache.set(key = "User-dash-"+currentUser,value=dashid, time=86400 )
-        logging.debug(dashId+u"のDashButtonは登録されていません。")
+        logging.debug(dashId + u"のDashButtonは登録されていません。")
 
         try:
             lineId = currentUser
@@ -128,10 +134,10 @@ def setUserByDashIdWithCurrentUser(dashId):
             userData.put()
             found_lineId = lineId
             clearCurrentUser()
-            send2Line.sendText( currentUser,"DashButtonが登録されました")
+            send2Line.sendText(currentUser, "DashButtonが登録されました")
             result = True
         except:
-            logging.warning(u"currentUserに登録してある"+lineId+u"は登録されていません。")
+            logging.warning(u"currentUserに登録してある" + lineId + u"は登録されていません。")
 
     else:
         logging.warning(u"currentUserが設定されていないためコマンドを無視します。")
@@ -149,9 +155,10 @@ def getUserMessageByLineId(lineId):
         logging.debug('userData: ' + str(userData))
         result = userData.message
     except:
-        logging.debug(lineId+u"は登録されていません。")
+        logging.debug(lineId + u"は登録されていません。")
 
     return result
+
 
 def setUserMessageByLineId(lineId, new_message):
     logging.debug('ENTER setUser_DashButtonMessage\n')
@@ -165,7 +172,7 @@ def setUserMessageByLineId(lineId, new_message):
         userData.put()
         result = True
     except:
-        logging.debug(lineId+u"は登録されていません。")
+        logging.debug(lineId + u"は登録されていません。")
 
     # try:
     #     key = Key.from_path('UserData', lineId)
@@ -180,6 +187,7 @@ def setUserMessageByLineId(lineId, new_message):
     #     logging.debug(lineId+u"は登録されていません。")
 
     return result
+
 
 #    try:
 #    entities=db.Query('UserData').filter("dash =", dashid)
@@ -205,11 +213,11 @@ def setUserMessageByLineId(lineId, new_message):
 #        entity.update({
 #                   'dash': dashid
 #
- #       })
- #       datastore.Put(entity)
+#       })
+#       datastore.Put(entity)
 
 #        clearCurrentUser()
- #       return currentUser
+#       return currentUser
 
 #    return ""
 
@@ -225,16 +233,19 @@ def deleteUserData(id):
         key = Key.from_path('UserData', id)
         entity = datastore.Delete(key)
     except:
-        logging.debug(id+u"は登録されていません。")
+        logging.debug(id + u"は登録されていません。")
+
 
 def setCurrentUser(id):
-    memcache.set(key = "CURRENTUSR",value=id)
+    memcache.set(key="CURRENTUSR", value=id)
+
 
 def getCurrentUser():
-    return memcache.get(key = "CURRENTUSR")
+    return memcache.get(key="CURRENTUSR")
+
 
 def clearCurrentUser():
-    return memcache.delete(key = "CURRENTUSR")
+    return memcache.delete(key="CURRENTUSR")
 
 
 ### TEST
@@ -253,9 +264,10 @@ def test_getDashIdFromLineId(lineId):
             # logging.debug('    dashId: ' + p.dashId + '\n')
             # logging.debug('    registrationTime: ' + p.registrationTime + '\n')
     except:
-        logging.debug(id+u"は登録されていません。")
+        logging.debug(id + u"は登録されていません。")
 
     return result
+
 
 def test_getLineIdFromId(id):
     result = 'dummy'
@@ -266,9 +278,9 @@ def test_getLineIdFromId(id):
         if entity != None:
             result = entity['lineId']
         else:
-            logging.debug(id+u"は登録されていません。")
+            logging.debug(id + u"は登録されていません。")
     except:
-        logging.debug(id+u"は登録されていません。")
+        logging.debug(id + u"は登録されていません。")
 
     return result
 
