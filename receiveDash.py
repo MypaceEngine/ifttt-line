@@ -22,13 +22,23 @@ def receiveExec_Text(self):
 
     # create jsonobj from request.body
     # if(self.request.headers['Content-Type']=='text/plain'):
-    jsonstr = self.request.body
-    jsonstr = jsonstr.replace('\r', '')
-    jsonstr = jsonstr.replace('\n', '\\n')
-    jsonobj = json.loads(jsonstr)
-    logging.debug(jsonobj)
+    request_headers = self.request.headers
+    jsonstr_body = self.request.body
+    jsonstr_body = jsonstr_body.replace('\r', '')
+    jsonstr_body = jsonstr_body.replace('\n', '\\n')
+    request_bodies = json.loads(jsonstr_body)
 
-    dashId = jsonobj[u'dash']
+    # if dashId is specified
+    if request_bodies.get(u'dash') != None:
+        dashId = request_bodies[u'dash']
+    # if ButtonMac in header is specified
+    elif request_headers.get('ButtonMAC') != None:
+        dashId = request_headers.get('ButtonMAC')
+    else:
+        logging.error(u'dasherからの送信されたデータが不正です。dasherの設定を見直してください。')
+        return
+
+    # dashId = jsonobj[u'dash']
     lineId = userinfo_utility.getUserByDashId(dashId)
 
     # if the dashId is not assigned to lineId, assign together
@@ -44,7 +54,7 @@ def receiveExec_Text(self):
     message = userinfo_utility.getUserMessageByLineId(lineId)
 
     if not userinfo_utility.isExistUserData(lineId):
-        logging.debug(u'ERROR: 該当するLINE IDが見つかりませんでした')
+        logging.error(u'該当するLINE IDが見つかりませんでした')
         return
 
     displayName = getFromLine.getUserProfine(lineId)["displayName"]
